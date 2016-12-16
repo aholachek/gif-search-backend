@@ -2,8 +2,8 @@ var express = require('express');
 var cors = require('cors');
 var app = express();
 var bodyParser = require('body-parser');
-var FileReader = require('filereader')
-fileReader = new FileReader();
+var FileReader = require('filereader');
+var fileReader = new FileReader();
 
 var getReactionGifs = require('./getReactionGifs');
 
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 app.options('/', cors(corsOptions));
 
 app.post('/', cors(corsOptions), function(req, res) {
-  getReactionGifs(req.body.data).then(function(results) {
+  getReactionGifs.getGifs(req.body.data).then(function(results) {
     return res.json(results);
   }, function(error) {
     debugger
