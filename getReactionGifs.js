@@ -10,19 +10,17 @@ require('dotenv')
   });
 
 function dataURIToBuffer(data_uri){
-  debugger
   var regex = /^data:.+\/(.+);base64,(.*)$/;
   var matches = data_uri.match(regex);
   var ext = matches[1];
   var data = matches[2];
+
   return new Buffer(data, 'base64');
 }
 
 function recognizeImage(buffer){
-  debugger
 
-  var oxfordEmotion = require("node-oxford-emotion")
-  (process.env.EMOTION_KEY);
+  var oxfordEmotion = require("node-oxford-emotion")(process.env.EMOTION_KEY);
 
   return new Promise(function(resolve, reject) {
       oxfordEmotion
@@ -34,9 +32,12 @@ function recognizeImage(buffer){
 }
 
 function parseEmotionData(oxfordResponse) {
-  debugger
-
-  var faceData = JSON.parse(oxfordResponse)[0].scores;
+  var faceData;
+  try {
+    faceData = JSON.parse(oxfordResponse)[0].scores;
+  } catch (e) {
+    throw new Error('We weren\'t able to read your expression!');
+  }
   var topEmotion = Object
     .keys(faceData)
     .map(function(emotion) {
@@ -67,7 +68,7 @@ function parseEmotionData(oxfordResponse) {
 }
 
 function fetchGiphyData (emotion){
-  debugger
+
    return axios.get('http://api.giphy.com/v1/gifs/search', {
       params: {
         q: emotion,
@@ -76,7 +77,7 @@ function fetchGiphyData (emotion){
       }
     })
     .then(function(data){
-      return [data, emotion]
+      return [data.data.data, emotion]
     });
 
   }
@@ -86,15 +87,9 @@ function getGifs(data_uri) {
 
   var buffer = dataURIToBuffer(data_uri);
 
-  recognizeImage(buffer)
+  return recognizeImage(buffer)
     .then(parseEmotionData)
-    .then(fetchGiphyData)
-    .then(function(responseArray) {
-      return {
-        gifList: responseArray[0].data.data,
-        emotion: responseArray[1]
-      };
-    });
+    .then(fetchGiphyData);
   }
 
 module.exports = {
