@@ -77,7 +77,10 @@ function fetchGiphyData (emotion){
       }
     })
     .then(function(data){
-      return [data.data.data, emotion]
+      return {
+        gifList : data.data.data,
+        emotion : emotion
+      }
     });
 
   }

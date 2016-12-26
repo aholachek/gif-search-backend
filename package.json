@@ -4,7 +4,7 @@
   "description": "",
   "main": "api-server.js",
   "scripts": {
-    "dev": "NODE_ENV=development node --inspect --debug-brk api-server.js",
+    "dev": "NODE_ENV=development node --inspect api-server.js",
     "start": "NODE_ENV=production node api-server.js",
     "test": "./node_modules/.bin/mocha --reporter spec --timeout 8000"
   },
