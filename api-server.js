@@ -24,7 +24,6 @@ app.post('/', cors(corsOptions), function(req, res) {
   getReactionGifs.getGifs(req.body.data).then(function(results) {
     return res.json(results);
   }, function(error) {
-    debugger
     var prettyPrintStack = error.stack.split('\n');
     console.log('error!', prettyPrintStack);
     return res.status(500).send(error.stack);
